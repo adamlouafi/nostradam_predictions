@@ -24,5 +24,5 @@ python main.py
 **[Telegram API](https://core.telegram.org/bots/api "telegram.org bot API documentation")**
 
 **[Pinnacle API](https://pinnacleapi.github.io/ "Pinnacle Open API Specifications")**
-test
+
 
