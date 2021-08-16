@@ -1,16 +1,20 @@
-# Description
-Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )
-# Requirements
-**[Python and pip](https://www.python.org/downloads/ "python.org download page")**
+# Nostradam Predictions
 
-**To set up the project on your own machine:**
+Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )
+## Installing / Getting started
+### Prerequisites
+
+**[python and pip](https://www.python.org/downloads/ "python.org download page")**
+
+
+### Setting up
 ```python
 pip install -r requirements.txt
 ```
 ```python
 python main.py
 ```
-# Documentation
+## Documentation
 **[Python](https://docs.python.org/3/ "python.org documentation")**
 
 **[APscheduler](https://apscheduler.readthedocs.io/en/stable/ "apscheduler.readthedocs.io documentation")**
