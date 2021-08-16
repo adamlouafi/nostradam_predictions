@@ -55,19 +55,26 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            if(match_odds["home"] >= match_odds["draw"] >= match_odds["away"] >= 2):
+                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
+                            home_odd = (3*match_odds["home"])/(3-match_odds_margin*match_odds["home"])
+                            draw_odd = (3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"])
+                            away_odd = (3*match_odds["away"])/(3-match_odds_margin*match_odds["away"])
+                            if(home_odd >= draw_odd >= away_odd >= 2):
                                 for over_under in period["totals"]:
                                     if(over_under["points"] == 2.5 and over_under["over"] >= 2):
+                                        over_under_margin = 1/over_under["over"] + 1/over_under["under"]
+                                        over_odd = (2*over_under["over"])/(2-over_under_margin*over_under["over"])
+                                        under_odd = (2*over_under["under"])/(2-over_under_margin*over_under["under"])
                                         selected_fixtures[event["id"]] = {
                                             "date": selected_fixtures[event["id"]]["date"],
                                             "time": selected_fixtures[event["id"]]["time"],
                                             "league": selected_fixtures[event["id"]]["league"],
                                             "fixture": selected_fixtures[event["id"]]["fixture"],
-                                            "home":match_odds["home"],
-                                            "draw":match_odds["draw"],
-                                            "away":match_odds["away"],
-                                            "o2.5":over_under["over"],
-                                            "u2.5":over_under["under"],
+                                            "home":home_odd,
+                                            "draw":draw_odd,
+                                            "away":away_odd,
+                                            "o2.5":over_odd,
+                                            "u2.5":under_odd,
                                         }
 
         # remove fixtures not matching criteria                            
@@ -102,7 +109,9 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            odd_movement = round(match_odds["draw"] - selected_fixtures[str(event["id"])]["draw"], 2)
+                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
+                            draw_odd = (3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"])
+                            odd_movement = round(draw_odd - selected_fixtures[str(event["id"])]["draw"], 2)
                             selected_fixtures[str(event["id"])]["draw_odd_movement"] = odd_movement
 
         with open("selected_fixtures.json", "w") as fp:
