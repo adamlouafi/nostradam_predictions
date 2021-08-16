@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ```python
 python main.py
 ```
-### Documentation
+### Built with
 **[Python](https://docs.python.org/3/ "python.org documentation")**
 
 **[APscheduler](https://apscheduler.readthedocs.io/en/stable/ "apscheduler.readthedocs.io documentation")**
