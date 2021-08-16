@@ -59,7 +59,7 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                             home_odd = round(match_odds["home"]*match_odds_margin, 2)
                             draw_odd = round(match_odds["draw"]*match_odds_margin, 2)
                             away_odd = round(match_odds["away"]*match_odds_margin, 2)
-                            if(home_odd >= draw_odd >= away_odd >= 2):
+                            if(4 >= home_odd >= draw_odd >= away_odd >= 2):
                                 for over_under in period["totals"]:
                                     if(over_under["points"] == 2.5 and over_under["over"] >= 2):
                                         over_under_odds_margin = 1/over_under["over"] + 1/over_under["under"]
