@@ -169,7 +169,7 @@ def sendPicks(date, tg_api_key, chat_id):
 
             fixture_number += 1
         
-        # url encoding need for '\n' characters
+        # url encoding needed for '\n' characters
         tg_url = f"https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}" 
         requests.get(tg_url)
         print(f"Selected fixtures sent to TG channel @ {datetime.utcnow()}")
