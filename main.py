@@ -3,7 +3,7 @@ import os
 import requests
 import urllib
 from apscheduler.schedulers.background import BlockingScheduler
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # load ".env" file var
@@ -25,10 +25,10 @@ tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
 def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
     try:
-        URL = f"{fixtures_url}?sportId={sport_id}"
+        URL = f'{fixtures_url}?sportId={sport_id}'
         HEADER = {'Accept': 'application/json', 'Authorization': f'Basic {ps3838_api_key}'}
         response = requests.get(url=URL, headers=HEADER)
-        print(f"Fixtures...{response.reason}")
+        print(f'Fixtures...{response.reason}')
         data = response.json()
         leagues = data["league"]
         selected_fixtures = {}
@@ -40,12 +40,12 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                         "date": date,
                             "time": event["starts"].split("T")[1].strip("Z"),
                             "league": league["name"],
-                            "fixture": f"{event['home']} - {event['away']}"
+                            "fixture": f'{event["home"]} - {event["away"]}'
                     }
         
-        URL = f"{odds_url}?sportId={soccer_id}&oddsFormat=Decimal"
+        URL = f'{odds_url}?sportId={soccer_id}&oddsFormat=Decimal'
         response = requests.get(url=URL, headers=HEADER)
-        print(f"Odds...{response.reason}")
+        print(f'Odds...{response.reason}')
         data = response.json()
         leagues = data["leagues"]
 
@@ -87,19 +87,19 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
 
         with open("selected_fixtures.json", "w") as fp:
             json.dump(selected_fixtures, fp, indent="")
-            print(f"Selected fixtures saved to file @ {datetime.utcnow()}")
-    except:
-        print("Failed to execute \'selectFixtures()\'")
+            print(f'Selected fixtures saved to file @ {datetime.utcnow()}')
+    except Exception as e:
+        print(f'Failed to execute \'selectFixtures()\' => {e}')
 
 def updateOdds(soccer_id, odds_url, ps3838_api_key):
     try:
         with open("selected_fixtures.json", "r") as fp:
             selected_fixtures = json.load(fp)
         
-        URL = f"{odds_url}?sportId={soccer_id}&oddsFormat=Decimal"
+        URL = f'{odds_url}?sportId={soccer_id}&oddsFormat=Decimal'
         HEADER = {'Accept': 'application/json', 'Authorization': f'Basic {ps3838_api_key}'}
         response = requests.get(url=URL, headers=HEADER)
-        print(f"Odds...{response.reason}")
+        print(f'Odds...{response.reason}')
         data = response.json()
         leagues = data["leagues"]
 
@@ -109,16 +109,16 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            match_odds_margin = round((1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"])-1, 2)
-                            draw_odd = round((3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"]), 2)
+                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
+                            draw_odd = round(match_odds["draw"]*match_odds_margin, 2)
                             odd_movement = round(draw_odd - selected_fixtures[str(event["id"])]["draw"], 2)
                             selected_fixtures[str(event["id"])]["draw_odd_movement"] = odd_movement
 
         with open("selected_fixtures.json", "w") as fp:
             json.dump(selected_fixtures, fp, indent="")
-            print(f"Odds update saved to file @ {datetime.utcnow()}")
-    except:
-        print("Failed to execute \'updateOdds()\'")
+            print(f'Odds update saved to file @ {datetime.utcnow()}')
+    except Exception as e:
+        print(f'Failed to execute \'updateOdds()\' => {e}')
 
 
 def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
@@ -132,10 +132,10 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
         else:
             settled_fixtures = {}
         
-        URL = f"{settled_fixtures_url}?sportId={soccer_id}"
+        URL = f'{settled_fixtures_url}?sportId={soccer_id}'
         HEADER = {'Accept': 'application/json', 'Authorization': f'Basic {ps3838_api_key}'}
         response = requests.get(url=URL, headers=HEADER)
-        print(f"Settled Fixtures...{response.reason}")
+        print(f'Settled Fixtures...{response.reason}')
         data = response.json()
         leagues = data["leagues"]
 
@@ -155,35 +155,44 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
                                 "o2.5":selected_fixtures[str(event["id"])]["o2.5"],
                                 "u2.5":selected_fixtures[str(event["id"])]["u2.5"],
                                 "draw_odd_movement":selected_fixtures[str(event["id"])]["draw_odd_movement"],
-                                "score": f"{period['team1Score']} - {period['team2Score']}"    
+                                "score": f'{period["team1Score"]} - {period["team2Score"]}'    
                             }
         
         with open("settled_fixtures.json", "w") as fp:
             json.dump(settled_fixtures, fp, indent="")
-            print(f"Settled fixtures saved to file @ {datetime.utcnow()}")
-    except:
-        print("Failed to execute \'settleFixtures()\'")
+            print(f'Settled fixtures saved to file @ {datetime.utcnow()}')
+    except Exception as e:
+        print(f'Failed to execute \'settleFixtures()\' => {e}')
 
-def sendPicks(date, tg_api_key, chat_id):
+def sendPicks(tg_api_key, chat_id):
     try:
         with open("selected_fixtures.json", "r") as fp:
             selected_fixtures = json.load(fp)
 
-        text_message = f"Predictions for {date}\n\n"
+        text_message = ""
+        time_in_15mins = (datetime.utcnow() + timedelta(minutes=15)).strftime("%X")
+        current_time = datetime.utcnow().strftime("%X")
 
-        fixture_number = 1
+
         for x in selected_fixtures:
-            text_message += "# %s\n\N{alarm clock} %s (UTC)\n\N{stadium} %s\n\N{soccer ball} %s\n" "\N{direct hit} Draw: %s\n\n" \
-                    % (fixture_number, selected_fixtures[x]["time"][:-3], selected_fixtures[x]["league"], selected_fixtures[x]["fixture"], selected_fixtures[x]["draw"])
+            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
+                selected_fixtures[x]["reminded"] = 1
+                picks_eligible = True
+                
+                text_message += (f'\N{alarm clock} {selected_fixtures[x]["time"][:-3]} (UTC)\n\N{stadium} {selected_fixtures[x]["league"]}\n'
+                                f'\N{soccer ball} {selected_fixtures[x]["fixture"]}\n\N{direct hit} Draw: {selected_fixtures[x]["draw"]}\n\n')
 
-            fixture_number += 1
-        
-        # url encoding needed for '\n' characters
-        tg_url = f"https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}" 
-        requests.get(tg_url)
-        print(f"Selected fixtures sent to TG channel @ {datetime.utcnow()}")
-    except:
-        print("Failed to execute \'sendPicks()\'")    
+        if picks_eligible:
+            with open("selected_fixtures.json", "w") as fp:
+                json.dump(selected_fixtures, fp, indent="")
+                print(f'Sent picks saved to file @ {datetime.utcnow()}')
+
+            # url encoding needed for '\n' characters
+            tg_url = f'https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}'
+            requests.get(tg_url)
+            print(f'Selected fixtures sent to TG channel @ {datetime.utcnow()}')
+    except Exception as e:
+        print(f'Failed to execute \'sendPicks()\' => {e}')    
 
 
 def main():
@@ -197,12 +206,12 @@ def main():
 
         scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
         scheduler.add_job(selectFixtures,trigger='cron', args=[soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], hour=7, minute=55, misfire_grace_time=600)
-        scheduler.add_job(sendPicks,trigger='cron', args=[today_date, tg_api_key, tg_chat_id], hour=8, minute=00, misfire_grace_time=600)
-        scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2, misfire_grace_time=600)
+        scheduler.add_job(sendPicks,trigger='interval', args=[tg_api_key, tg_chat_id], minutes=2)
+        scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2)
 
         scheduler.start()
-    except:
-        print("Failed to execute \'main()\'")
+    except Exception as e:
+        print(f'Failed to execute \'main()\' => {e}')
 
 
 if __name__ == '__main__':
