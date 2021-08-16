@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# api doc available @ https://ps3838api.github.io/docs
+# api doc available @ https://pinnacleapi.github.io/
 
 
 soccer_id = 29
