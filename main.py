@@ -55,16 +55,16 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            match_odds_margin = round((1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"])-1, 2)
-                            home_odd = round((3*match_odds["home"])/(3-match_odds_margin*match_odds["home"]), 2)
-                            draw_odd = round((3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"]), 2)
-                            away_odd = round((3*match_odds["away"])/(3-match_odds_margin*match_odds["away"]), 2)
+                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
+                            home_odd = round(match_odds["home"]*match_odds_margin, 2)
+                            draw_odd = round(match_odds["draw"]*match_odds_margin, 2)
+                            away_odd = round(match_odds["away"]*match_odds_margin, 2)
                             if(home_odd >= draw_odd >= away_odd >= 2):
                                 for over_under in period["totals"]:
                                     if(over_under["points"] == 2.5 and over_under["over"] >= 2):
-                                        over_under_margin = round((1/over_under["over"] + 1/over_under["under"])-1, 2)
-                                        over_odd = round((2*over_under["over"])/(2-over_under_margin*over_under["over"]), 2)
-                                        under_odd = round((2*over_under["under"])/(2-over_under_margin*over_under["under"]), 2)
+                                        over_under_odds_margin = 1/over_under["over"] + 1/over_under["under"]
+                                        over_odd = round(over_under["over"]*over_under_odds_margin, 2)
+                                        under_odd = round(over_under["under"]*over_under_odds_margin, 2)
                                         selected_fixtures[event["id"]] = {
                                             "date": selected_fixtures[event["id"]]["date"],
                                             "time": selected_fixtures[event["id"]]["time"],
@@ -188,7 +188,7 @@ def sendPicks(date, tg_api_key, chat_id):
 
 def main():
     # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
-    selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
+    # selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
     # sendPicks(today_date, tg_api_key, tg_chat_id)
     # updateOdds(soccer_id, odds_url, ps3838_api_key)
 
