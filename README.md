@@ -6,6 +6,8 @@ Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )
 **To set up the project on your own machine:**
 ```python
 pip install -r requirements.txt
+```
+```python
 python main.py
 ```
 # Documentation
