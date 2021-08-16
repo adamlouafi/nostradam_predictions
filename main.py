@@ -40,7 +40,7 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                         "date": date,
                             "time": event["starts"].split("T")[1].strip("Z"),
                             "league": league["name"],
-                            "fixture": "%s - %s" % (event["home"], event["away"])
+                            "fixture": f"event['home'] - event['away']"
                     }
         
         URL = f"{odds_url}?sportId={soccer_id}&oddsFormat=Decimal"
@@ -55,16 +55,16 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
-                            home_odd = (3*match_odds["home"])/(3-match_odds_margin*match_odds["home"])
-                            draw_odd = (3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"])
-                            away_odd = (3*match_odds["away"])/(3-match_odds_margin*match_odds["away"])
+                            match_odds_margin = round((1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"])-1, 2)
+                            home_odd = round((3*match_odds["home"])/(3-match_odds_margin*match_odds["home"]), 2)
+                            draw_odd = round((3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"]), 2)
+                            away_odd = round((3*match_odds["away"])/(3-match_odds_margin*match_odds["away"]), 2)
                             if(home_odd >= draw_odd >= away_odd >= 2):
                                 for over_under in period["totals"]:
                                     if(over_under["points"] == 2.5 and over_under["over"] >= 2):
-                                        over_under_margin = 1/over_under["over"] + 1/over_under["under"]
-                                        over_odd = (2*over_under["over"])/(2-over_under_margin*over_under["over"])
-                                        under_odd = (2*over_under["under"])/(2-over_under_margin*over_under["under"])
+                                        over_under_margin = round((1/over_under["over"] + 1/over_under["under"])-1, 2)
+                                        over_odd = round((2*over_under["over"])/(2-over_under_margin*over_under["over"]), 2)
+                                        under_odd = round((2*over_under["under"])/(2-over_under_margin*over_under["under"]), 2)
                                         selected_fixtures[event["id"]] = {
                                             "date": selected_fixtures[event["id"]]["date"],
                                             "time": selected_fixtures[event["id"]]["time"],
@@ -109,8 +109,8 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
                     for period in event["periods"]:
                         if("moneyline" in period and period["number"] == 0):
                             match_odds = period["moneyline"]
-                            match_odds_margin = 1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"]
-                            draw_odd = (3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"])
+                            match_odds_margin = round((1/match_odds["home"] + 1/match_odds["draw"] + 1/match_odds["away"])-1, 2)
+                            draw_odd = round((3*match_odds["draw"])/(3-match_odds_margin*match_odds["draw"]), 2)
                             odd_movement = round(draw_odd - selected_fixtures[str(event["id"])]["draw"], 2)
                             selected_fixtures[str(event["id"])]["draw_odd_movement"] = odd_movement
 
@@ -155,7 +155,7 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
                                 "o2.5":selected_fixtures[str(event["id"])]["o2.5"],
                                 "u2.5":selected_fixtures[str(event["id"])]["u2.5"],
                                 "draw_odd_movement":selected_fixtures[str(event["id"])]["draw_odd_movement"],
-                                "score": "%s - %s" %(period["team1Score"], period["team2Score"])    
+                                "score": f"period['team1Score'] - period['team2Score']"    
                             }
         
         with open("settled_fixtures.json", "w") as fp:
@@ -188,7 +188,7 @@ def sendPicks(date, tg_api_key, chat_id):
 
 def main():
     # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
-    # selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
+    selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
     # sendPicks(today_date, tg_api_key, tg_chat_id)
     # updateOdds(soccer_id, odds_url, ps3838_api_key)
 
@@ -198,7 +198,7 @@ def main():
         scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
         scheduler.add_job(selectFixtures,trigger='cron', args=[soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], hour=7, minute=55, misfire_grace_time=600)
         scheduler.add_job(sendPicks,trigger='cron', args=[today_date, tg_api_key, tg_chat_id], hour=8, minute=00, misfire_grace_time=600)
-        scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2, misfire_grace_time=600, next_run_time=datetime.utcnow())
+        scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2, misfire_grace_time=600)
 
         scheduler.start()
     except:
