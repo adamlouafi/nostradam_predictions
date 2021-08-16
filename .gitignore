@@ -4,6 +4,6 @@
 # Except
 !.gitignore
 !requirements.txt
-!*.py
+!main.py
 !README.md
 !logo.svg
