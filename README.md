@@ -1,7 +1,7 @@
 # Description
 Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )
 # Requirements
-**[Python and pip](https://www.python.org/downloads/ "python.org download page").**
+**[Python and pip](https://www.python.org/downloads/ "python.org download page")**
 
 **To set up the project on your own machine:**
 ```python
