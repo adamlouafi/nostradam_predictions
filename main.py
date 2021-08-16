@@ -178,6 +178,11 @@ def sendPicks(date, tg_api_key, chat_id):
 
 
 def main():
+    # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
+    # selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
+    # sendPicks(today_date, tg_api_key, tg_chat_id)
+    # updateOdds(soccer_id, odds_url, ps3838_api_key)
+
     try:
         scheduler = BlockingScheduler(timezone='UTC')
 
