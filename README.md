@@ -1,20 +1,25 @@
-# Nostradam Predictions
+<p align="center">
+    <a href="https://github.com/adamlouafi/nostradam_predictions">
+        <img src="./logo.svg" alt=Logo width="100" height="100">
+    </a>
+    <h2 align="center">Nostradam Predictions</h2>
+    <p align="center">Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )</p>
+</p> 
 
-Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )
-## Installing / Getting started
-### Prerequisites
+### Installing / Getting started
+#### Prerequisites
 
 **[python and pip](https://www.python.org/downloads/ "python.org download page")**
 
 
-### Setting up
+#### Setting up
 ```python
 pip install -r requirements.txt
 ```
 ```python
 python main.py
 ```
-## Documentation
+### Documentation
 **[Python](https://docs.python.org/3/ "python.org documentation")**
 
 **[APscheduler](https://apscheduler.readthedocs.io/en/stable/ "apscheduler.readthedocs.io documentation")**
