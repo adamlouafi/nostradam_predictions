@@ -172,7 +172,7 @@ def sendPicks(tg_api_key, chat_id):
         text_message = ""
         time_in_15mins = (datetime.utcnow() + timedelta(minutes=15)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
-
+        picks_eligible = False
 
         for x in selected_fixtures:
             if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
