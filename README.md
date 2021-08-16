@@ -3,7 +3,7 @@
         <img src="./logo.svg" alt=Logo width="100" height="100">
     </a>
     <h2 align="center">Nostradam Predictions</h2>
-    <p align="center">Provide automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )</p>
+    <p align="center">Bot providing automated betting tips ( ⚠️ Disclaimer: Not betting advisor ! )</p>
 </p> 
 
 ### Installing / Getting started
