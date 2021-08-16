@@ -40,7 +40,7 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                         "date": date,
                             "time": event["starts"].split("T")[1].strip("Z"),
                             "league": league["name"],
-                            "fixture": f"event['home'] - event['away']"
+                            "fixture": f"{event['home']} - {event['away']}"
                     }
         
         URL = f"{odds_url}?sportId={soccer_id}&oddsFormat=Decimal"
@@ -155,7 +155,7 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
                                 "o2.5":selected_fixtures[str(event["id"])]["o2.5"],
                                 "u2.5":selected_fixtures[str(event["id"])]["u2.5"],
                                 "draw_odd_movement":selected_fixtures[str(event["id"])]["draw_odd_movement"],
-                                "score": f"period['team1Score'] - period['team2Score']"    
+                                "score": f"{period['team1Score']} - {period['team2Score']}"    
                             }
         
         with open("settled_fixtures.json", "w") as fp:
@@ -188,7 +188,7 @@ def sendPicks(date, tg_api_key, chat_id):
 
 def main():
     # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
-    # selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
+    selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
     # sendPicks(today_date, tg_api_key, tg_chat_id)
     # updateOdds(soccer_id, odds_url, ps3838_api_key)
 
