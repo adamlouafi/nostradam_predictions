@@ -175,7 +175,7 @@ def sendPicks(tg_api_key, chat_id):
         picks_eligible = False
 
         for x in selected_fixtures:
-            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
+            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x] and selected_fixtures[x]["draw_odd_movement"] < 0):
                 selected_fixtures[x]["reminded"] = 1
                 picks_eligible = True
                 
@@ -206,7 +206,7 @@ def main():
 
         scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
         scheduler.add_job(selectFixtures,trigger='cron', args=[soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], hour=7, minute=55, misfire_grace_time=600)
-        scheduler.add_job(sendPicks,trigger='interval', args=[tg_api_key, tg_chat_id], minutes=2)
+        scheduler.add_job(sendPicks,trigger='interval', args=[tg_api_key, tg_chat_id], minutes=2, next_run_time=datetime.utcnow())
         scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2)
 
         scheduler.start()
