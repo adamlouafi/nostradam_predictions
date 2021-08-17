@@ -187,24 +187,18 @@ def sendPicks(tg_api_key, chat_id):
     except Exception as e:
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
-def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, date, ps3838_api_key):
+def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
     try:
+        settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
         selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
         sendPicks(tg_api_key, tg_chat_id)
     except Exception as e:
         print(f'Failed to execute \'jobsHandling()\' => {e}')
 
 def main():
-    # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
-    # selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
-    # sendPicks(today_date, tg_api_key, tg_chat_id)
-    # updateOdds(soccer_id, odds_url, ps3838_api_key)
-
     try:
         scheduler = BlockingScheduler(timezone='UTC')
-
-        scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
-        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], minutes=5, next_run_time=datetime.utcnow())
+        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, today_date, ps3838_api_key], minutes=5, next_run_time=datetime.utcnow())
 
         scheduler.start()
     except Exception as e:
