@@ -178,6 +178,9 @@ def sendPicks(tg_api_key, chat_id):
 
         for x in selected_fixtures:
             if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x] and selected_fixtures[x]["draw_odd_movement"] < 0):
+                with open("settled_fixtures.json", "w") as fp:
+                    json.dump(selected_fixtures[x])
+                
                 selected_fixtures[x]["reminded"] = 1
                 picks_eligible = True
                 
@@ -192,11 +195,12 @@ def sendPicks(tg_api_key, chat_id):
             # url encoding needed for '\n' characters
             tg_url = f'https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}'
             requests.get(tg_url)
-            print(f'Selected fixtures sent to TG channel @ {datetime.utcnow()}')
+            print(f'Selected fixtures sent to TG channel & added to settlement file @ {datetime.utcnow()}')
     except Exception as e:
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
-def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, ps3838_api_key):
+def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, date, ps3838_api_key):
+    selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
     sendPicks(tg_api_key, tg_chat_id)
     updateOdds(soccer_id, odds_url, ps3838_api_key)
 
@@ -212,7 +216,7 @@ def main():
 
         scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
         scheduler.add_job(selectFixtures,trigger='cron', args=[soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], hour=7, minute=55, misfire_grace_time=600)
-        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, ps3838_api_key], minutes=2)
+        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], minutes=2)
 
         scheduler.start()
     except Exception as e:
