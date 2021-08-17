@@ -177,7 +177,7 @@ def sendPicks(tg_api_key, chat_id):
         picks_eligible = False
 
         for x in selected_fixtures:
-            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x] and selected_fixtures[x]["draw_odd_movement"] < 0):
+            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
                 with open("settled_fixtures.json", "w") as fp:
                     json.dump(selected_fixtures[x])
                 
@@ -201,7 +201,6 @@ def sendPicks(tg_api_key, chat_id):
 
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, date, ps3838_api_key):
     try:
-        updateOdds(soccer_id, odds_url, ps3838_api_key)
         selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
         sendPicks(tg_api_key, tg_chat_id)
     except Exception as e:
