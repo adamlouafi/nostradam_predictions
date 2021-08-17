@@ -125,9 +125,6 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
 
 def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
     try:    
-        with open("selected_fixtures.json", "r") as fp:
-            selected_fixtures = json.load(fp)
-        
         with open("settled_fixtures.json", "r") as fp:
             settled_fixtures = json.load(fp)
         
@@ -143,20 +140,8 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
                 if(str(event["id"]) in selected_fixtures):
                     for period in event["periods"]:
                         if(period["number"] == 0 and (period["status"] == 1 or period["status"] == 2)):
-                            settled_fixtures[str(event["id"])] = {
-                                "date": selected_fixtures[str(event["id"])]["date"],
-                                "time": selected_fixtures[str(event["id"])]["time"],
-                                "league": selected_fixtures[str(event["id"])]["league"],
-                                "fixture": selected_fixtures[str(event["id"])]["fixture"],
-                                "home":selected_fixtures[str(event["id"])]["home"],
-                                "draw":selected_fixtures[str(event["id"])]["draw"],
-                                "away":selected_fixtures[str(event["id"])]["away"],
-                                "o2.5":selected_fixtures[str(event["id"])]["o2.5"],
-                                "u2.5":selected_fixtures[str(event["id"])]["u2.5"],
-                                "draw_odd_movement":selected_fixtures[str(event["id"])]["draw_odd_movement"],
-                                "score": f'{period["team1Score"]} - {period["team2Score"]}'    
-                            }
-                        elif(period["number"] == 0 and (period["status"] == 1 or period["status"] == 2)):
+                            settled_fixtures[str(event["id"])]["score"] = f'{period["team1Score"]} - {period["team2Score"]}' 
+                        elif(period["number"] == 1 and (period["status"] == 1 or period["status"] == 2)):
                             settled_fixtures[str(event["id"])]["ht_score"] = f'{period["team1Score"]} - {period["team2Score"]}'
         
         with open("settled_fixtures.json", "w") as fp:
