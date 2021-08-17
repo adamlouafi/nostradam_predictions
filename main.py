@@ -45,7 +45,7 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
         
         URL = f'{odds_url}?sportId={soccer_id}&oddsFormat=Decimal'
         response = requests.get(url=URL, headers=HEADER)
-        print(f'Odds...{response.reason}')
+        # print(f'Odds...{response.reason}')
         data = response.json()
         leagues = data["leagues"]
 
