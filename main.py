@@ -123,8 +123,8 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
 
 def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
     try:    
-        with open("selected_fixtures.json", "w+") as fp:
-                selected_fixtures = json.load(fp)
+        with open("selected_fixtures.json", "r") as fp:
+            selected_fixtures = json.load(fp)
         
         if os.path.isfile("./settled_fixtures.json"):
             with open("settled_fixtures.json", "r") as fp:
@@ -157,6 +157,8 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
                                 "draw_odd_movement":selected_fixtures[str(event["id"])]["draw_odd_movement"],
                                 "score": f'{period["team1Score"]} - {period["team2Score"]}'    
                             }
+                        elif(period["number"] == 0 and (period["status"] == 1 or period["status"] == 2)):
+                            settled_fixtures[str(event["id"])]["ht_score"] = f'{period["team1Score"]} - {period["team2Score"]}'
         
         with open("settled_fixtures.json", "w") as fp:
             json.dump(settled_fixtures, fp, indent="")
