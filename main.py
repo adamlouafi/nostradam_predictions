@@ -21,6 +21,8 @@ today_date = datetime.utcnow().strftime("%Y-%m-%d")
 ps3838_api_key = os.getenv("PS3838_API_KEY")
 tg_api_key = os.getenv("TELEGRAM_API_KEY")
 tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+selected_fixtures = {}
+settled_fixtures = {}
 
 
 def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
@@ -126,11 +128,8 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
         with open("selected_fixtures.json", "r") as fp:
             selected_fixtures = json.load(fp)
         
-        if os.path.isfile("./settled_fixtures.json"):
-            with open("settled_fixtures.json", "r") as fp:
-                settled_fixtures = json.load(fp)
-        else:
-            settled_fixtures = {}
+        with open("settled_fixtures.json", "r") as fp:
+            settled_fixtures = json.load(fp)
         
         URL = f'{settled_fixtures_url}?sportId={soccer_id}'
         HEADER = {'Accept': 'application/json', 'Authorization': f'Basic {ps3838_api_key}'}
@@ -170,7 +169,10 @@ def sendPicks(tg_api_key, chat_id):
     try:
         with open("selected_fixtures.json", "r") as fp:
             selected_fixtures = json.load(fp)
-
+        
+        with open("settled_fixtures.json", "w") as fp:
+            settled_fixtures = json.load(fp)
+        
         text_message = ""
         time_in_15mins = (datetime.utcnow() + timedelta(minutes=15)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
@@ -178,6 +180,7 @@ def sendPicks(tg_api_key, chat_id):
 
         for x in selected_fixtures:
             if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
+                settled_fixtures[x] = selected_fixtures[x]
                 with open("settled_fixtures.json", "w") as fp:
                     json.dump(selected_fixtures[x], fp, indent="")
                 
