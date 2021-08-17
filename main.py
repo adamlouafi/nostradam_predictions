@@ -194,6 +194,10 @@ def sendPicks(tg_api_key, chat_id):
     except Exception as e:
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
+def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, ps3838_api_key):
+    sendPicks(tg_api_key, tg_chat_id)
+    updateOdds(soccer_id, odds_url, ps3838_api_key)
+
 
 def main():
     # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
@@ -206,8 +210,7 @@ def main():
 
         scheduler.add_job(settleFixtures,trigger='cron', args=[soccer_id, settled_fixtures_url, ps3838_api_key], hour=7, minute=50, misfire_grace_time=600)
         scheduler.add_job(selectFixtures,trigger='cron', args=[soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key], hour=7, minute=55, misfire_grace_time=600)
-        scheduler.add_job(sendPicks,trigger='interval', args=[tg_api_key, tg_chat_id], minutes=2, next_run_time=datetime.utcnow())
-        scheduler.add_job(updateOdds,trigger='interval',args=[soccer_id, odds_url, ps3838_api_key], minutes=2)
+        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, ps3838_api_key], minutes=2)
 
         scheduler.start()
     except Exception as e:
