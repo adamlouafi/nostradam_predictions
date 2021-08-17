@@ -179,7 +179,7 @@ def sendPicks(tg_api_key, chat_id):
         for x in selected_fixtures:
             if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and "reminded" not in selected_fixtures[x]):
                 with open("settled_fixtures.json", "w") as fp:
-                    json.dump(selected_fixtures[x])
+                    json.dump(selected_fixtures[x], fp, indent="")
                 
                 selected_fixtures[x]["reminded"] = 1
                 picks_eligible = True
