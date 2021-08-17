@@ -200,10 +200,12 @@ def sendPicks(tg_api_key, chat_id):
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, date, ps3838_api_key):
-    selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
-    sendPicks(tg_api_key, tg_chat_id)
-    updateOdds(soccer_id, odds_url, ps3838_api_key)
-
+    try:
+        selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
+        sendPicks(tg_api_key, tg_chat_id)
+        updateOdds(soccer_id, odds_url, ps3838_api_key)
+    except Exception as e:
+        print(f'Failed to execute \'jobsHandling()\' => {e}')
 
 def main():
     # settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
