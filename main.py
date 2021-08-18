@@ -47,7 +47,6 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
         
         URL = f'{odds_url}?sportId={soccer_id}&oddsFormat=Decimal'
         response = requests.get(url=URL, headers=HEADER)
-        # print(f'Odds...{response.reason}')
         data = response.json()
         leagues = data["leagues"]
 
@@ -125,8 +124,11 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
 
 def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
     try:    
-        with open("settled_fixtures.json", "r") as fp:
-            settled_fixtures = json.load(fp)
+        with open("settled_fixtures.json", "w") as fp:
+            if os.path.getsize("settled_fixtures.json") > 0:
+                settled_fixtures = json.load(fp)
+            else:
+                settled_fixtures = {}
         
         URL = f'{settled_fixtures_url}?sportId={soccer_id}'
         HEADER = {'Accept': 'application/json', 'Authorization': f'Basic {ps3838_api_key}'}
@@ -155,7 +157,7 @@ def sendPicks(tg_api_key, chat_id):
         with open("selected_fixtures.json", "r") as fp:
             selected_fixtures = json.load(fp)
         
-        with open("settled_fixtures.json", "w") as fp:
+        with open("settled_fixtures.json", "r") as fp:
             settled_fixtures = json.load(fp)
         
         text_message = ""
