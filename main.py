@@ -163,19 +163,17 @@ def sendPicks(tg_api_key, chat_id):
         text_message = ""
         time_in_15mins = (datetime.utcnow() + timedelta(minutes=15)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
-        picks_eligible = False
 
         for x in selected_fixtures:
             if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and x not in settled_fixtures):
                 settled_fixtures[x] = selected_fixtures[x]
-                with open("settled_fixtures.json", "w") as fp:
-                    json.dump(selected_fixtures[x], fp, indent="")
-                
-                picks_eligible = True
                 
                 text_message += (f'\N{alarm clock} {selected_fixtures[x]["time"][:-3]} (UTC)\n\N{stadium} {selected_fixtures[x]["league"]}\n'
                                 f'\N{soccer ball} {selected_fixtures[x]["fixture"]}\n\N{direct hit} Draw: {selected_fixtures[x]["draw"]}\n\n')
-
+        
+        with open("settled_fixtures.json", "w") as fp:
+            json.dump(settled_fixtures, fp, indent="")
+        
         # url encoding needed for '\n' characters
         tg_url = f'https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}'
         requests.get(tg_url)
