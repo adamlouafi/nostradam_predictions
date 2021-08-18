@@ -124,7 +124,7 @@ def updateOdds(soccer_id, odds_url, ps3838_api_key):
 
 def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
     try:    
-        with open("settled_fixtures.json", "w") as fp:
+        with open("settled_fixtures.json", "r") as fp:
             if os.path.getsize("settled_fixtures.json") > 0:
                 settled_fixtures = json.load(fp)
             else:
