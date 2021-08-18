@@ -139,7 +139,7 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
 
         for league in leagues:
             for event in league["events"]:
-                if(str(event["id"]) in selected_fixtures):
+                if(str(event["id"]) in settled_fixtures):
                     for period in event["periods"]:
                         if(period["number"] == 0 and (period["status"] == 1 or period["status"] == 2)):
                             settled_fixtures[str(event["id"])]["score"] = f'{period["team1Score"]} - {period["team2Score"]}' 
