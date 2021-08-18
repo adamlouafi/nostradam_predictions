@@ -161,11 +161,11 @@ def sendPicks(tg_api_key, chat_id):
             settled_fixtures = json.load(fp)
         
         text_message = ""
-        time_in_15mins = (datetime.utcnow() + timedelta(minutes=15)).strftime("%X")
+        time_in_10mins = (datetime.utcnow() + timedelta(minutes=10)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
 
         for x in selected_fixtures:
-            if(time_in_15mins >= selected_fixtures[x]["time"] > current_time and x not in settled_fixtures):
+            if(time_in_10mins >= selected_fixtures[x]["time"] > current_time and x not in settled_fixtures):
                 settled_fixtures[x] = selected_fixtures[x]
                 
                 text_message += (f'\N{alarm clock} {selected_fixtures[x]["time"][:-3]} (UTC)\n\N{stadium} {selected_fixtures[x]["league"]}\n'
