@@ -192,7 +192,7 @@ def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settl
 def main():
     try:
         scheduler = BlockingScheduler(timezone='UTC')
-        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, today_date, ps3838_api_key], minutes=5, next_run_time=datetime.utcnow())
+        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, today_date, ps3838_api_key], minutes=1, next_run_time=datetime.utcnow())
 
         scheduler.start()
     except Exception as e:
