@@ -92,6 +92,7 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
     except Exception as e:
         print(f'Failed to execute \'selectFixtures()\' => {e}')
 
+
 def updateOdds(soccer_id, odds_url, ps3838_api_key):
     try:
         with open("selected_fixtures.json", "r") as fp:
@@ -152,6 +153,7 @@ def settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key):
     except Exception as e:
         print(f'Failed to execute \'settleFixtures()\' => {e}')
 
+
 def sendPicks(tg_api_key, chat_id):
     try:
         with open("selected_fixtures.json", "r") as fp:
@@ -181,6 +183,7 @@ def sendPicks(tg_api_key, chat_id):
     except Exception as e:
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
+
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
     try:
         settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
@@ -189,12 +192,14 @@ def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settl
     except Exception as e:
         print(f'Failed to execute \'jobsHandling()\' => {e}')
 
+
 def purgeLogs():
     try:
         with open("logs.txt", "w") as fp:
             pass
     except Exception as e:
         print(f'Failed to execute \'purgLogs()\' => {e}')
+
 
 def main():
     try:
