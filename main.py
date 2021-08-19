@@ -165,6 +165,7 @@ def sendPicks(tg_api_key, chat_id):
         text_message = ""
         time_in_10mins = (datetime.utcnow() + timedelta(minutes=10)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
+        picks_sent = False
 
         for x in selected_fixtures:
             if(time_in_10mins >= selected_fixtures[x]["time"] > current_time and x not in settled_fixtures):
