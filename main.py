@@ -168,20 +168,22 @@ def sendPicks(tg_api_key, chat_id):
 
         for x in selected_fixtures:
             if(time_in_10mins >= selected_fixtures[x]["time"] > current_time and x not in settled_fixtures):
+                picks_sent = True
                 settled_fixtures[x] = selected_fixtures[x]
                 
                 text_message += (f'\N{alarm clock} {selected_fixtures[x]["time"][:-3]} (UTC)\n\N{stadium} {selected_fixtures[x]["league"]}\n'
                                 f'\N{soccer ball} {selected_fixtures[x]["fixture"]}\n\N{direct hit} Draw: {selected_fixtures[x]["draw"]}\n\n')
         
-        text_message += "Avoid betting @ lower odds than advised"
         
         with open("settled_fixtures.json", "w") as fp:
             json.dump(settled_fixtures, fp, indent="")
         
-        # url encoding needed for '\n' characters
-        tg_url = f'https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}'
-        requests.get(tg_url)
-        print(f'Selected fixtures sent to TG channel & added to settlement file @ {datetime.utcnow()}')
+        if picks_sent:
+            text_message += "Avoid betting @ lower odds than advised"
+            # url encoding needed for '\n' characters
+            tg_url = f'https://api.telegram.org/bot{tg_api_key}/sendMessage?chat_id={chat_id}&text={urllib.parse.quote(text_message)}'
+            requests.get(tg_url)
+            print(f'Selected fixtures sent to TG channel & added to settlement file @ {datetime.utcnow()}')
     except Exception as e:
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
