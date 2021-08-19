@@ -162,7 +162,7 @@ def sendPicks(tg_api_key, chat_id):
         with open("settled_fixtures.json", "r") as fp:
             settled_fixtures = json.load(fp)
         
-        text_message = ""
+        text_message = "Avoid betting @ lower odds than advised"
         time_in_10mins = (datetime.utcnow() + timedelta(minutes=10)).strftime("%X")
         current_time = datetime.utcnow().strftime("%X")
 
