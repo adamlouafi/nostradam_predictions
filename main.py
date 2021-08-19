@@ -40,9 +40,9 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                 if(event["starts"].split('T')[0] == date and event["liveStatus"] != 1 and event["resultingUnit"] == "Regular"):
                     selected_fixtures[event["id"]] = {
                         "date": date,
-                            "time": event["starts"].split("T")[1].strip("Z"),
-                            "league": league["name"],
-                            "fixture": f'{event["home"]} - {event["away"]}'
+                        "time": event["starts"].split("T")[1].strip("Z"),
+                        "league": league["name"],
+                        "fixture": f'{event["home"]} - {event["away"]}'
                     }
         
         URL = f'{odds_url}?sportId={soccer_id}&oddsFormat=Decimal'
