@@ -189,6 +189,14 @@ def sendPicks(tg_api_key, chat_id):
         print(f'Failed to execute \'sendPicks()\' => {e}')    
 
 
+def purgeLogs():
+    try:
+        with open("logs.txt", "w") as fp:
+            pass
+    except Exception as e:
+        print(f'Failed to execute \'purgLogs()\' => {e}')
+
+
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
     try:
         settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
@@ -198,19 +206,10 @@ def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settl
         print(f'Failed to execute \'jobsHandling()\' => {e}')
 
 
-def purgeLogs():
-    try:
-        with open("logs.txt", "w") as fp:
-            pass
-    except Exception as e:
-        print(f'Failed to execute \'purgLogs()\' => {e}')
-
-
 def main():
     try:
         scheduler = BlockingScheduler(timezone='UTC')
         scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, today_date, ps3838_api_key], minutes=1, next_run_time=datetime.utcnow())
-        scheduler.add_job(purgeLogs,trigger='interval', hours=1, next_run_time=datetime.utcnow())
 
         scheduler.start()
     except Exception as e:
