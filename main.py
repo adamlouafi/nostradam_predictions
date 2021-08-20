@@ -191,7 +191,8 @@ def sendPicks(tg_api_key, chat_id):
 
 def purgeLogs():
     try:
-        os.remove("logs.txt")
+        with open("logs.txt", "w") as fp:
+            pass
     except Exception as e:
         print(f'Failed to execute \'purgeLogs()\' => {e}')
 
