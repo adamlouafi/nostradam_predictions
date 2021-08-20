@@ -191,10 +191,9 @@ def sendPicks(tg_api_key, chat_id):
 
 def purgeLogs():
     try:
-        with open("logs.txt", "w") as fp:
-            pass
+        os.remove("logs.txt")
     except Exception as e:
-        print(f'Failed to execute \'purgLogs()\' => {e}')
+        print(f'Failed to execute \'purgeLogs()\' => {e}')
 
 
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
