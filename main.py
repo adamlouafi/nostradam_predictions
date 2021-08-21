@@ -17,12 +17,17 @@ soccer_id = 29
 odds_url = "https://api.ps3838.com/v3/odds"
 fixtures_url = "https://api.ps3838.com/v3/fixtures"
 settled_fixtures_url = "https://api.ps3838.com/v3/fixtures/settled"
-today_date = datetime.utcnow().strftime("%Y-%m-%d")
 ps3838_api_key = os.getenv("PS3838_API_KEY")
 tg_api_key = os.getenv("TELEGRAM_API_KEY")
 tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
 selected_fixtures = {}
 settled_fixtures = {}
+
+def todayDate():
+    today_date = datetime.utcnow().strftime("%Y-%m-%d")
+    return today_date
+
+today_date = todayDate()
 
 
 def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
