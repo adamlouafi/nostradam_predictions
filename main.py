@@ -27,8 +27,6 @@ def todayDate():
     today_date = datetime.utcnow().strftime("%Y-%m-%d")
     return today_date
 
-today_date = todayDate()
-
 
 def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
     try:
@@ -204,6 +202,7 @@ def purgeLogs():
 
 def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
     try:
+        today_date = todayDate()
         purgeLogs()
         settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
         selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
