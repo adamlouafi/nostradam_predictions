@@ -23,10 +23,6 @@ tg_chat_id = os.getenv("TELEGRAM_CHAT_ID")
 selected_fixtures = {}
 settled_fixtures = {}
 
-def todayDate():
-    today_date = datetime.utcnow().strftime("%Y-%m-%d")
-    return today_date
-
 
 def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
     try:
@@ -200,11 +196,12 @@ def purgeLogs():
         print(f'Failed to execute \'purgeLogs()\' => {e}')
 
 
-def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, date, ps3838_api_key):
+def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settled_fixtures_url, ps3838_api_key):
     try:
+        today_date = datetime.utcnow().strftime("%Y-%m-%d")
         purgeLogs()
         settleFixtures(soccer_id, settled_fixtures_url, ps3838_api_key)
-        selectFixtures(soccer_id, odds_url, fixtures_url, date, ps3838_api_key)
+        selectFixtures(soccer_id, odds_url, fixtures_url, today_date, ps3838_api_key)
         sendPicks(tg_api_key, tg_chat_id)
     except Exception as e:
         print(f'Failed to execute \'jobsHandling()\' => {e}')
@@ -212,10 +209,8 @@ def jobsHandling(tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url,settl
 
 def main():
     try:
-        today_date = todayDate()
-        
         scheduler = BlockingScheduler(timezone='UTC')
-        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, today_date, ps3838_api_key], minutes=1, next_run_time=datetime.utcnow())
+        scheduler.add_job(jobsHandling,trigger='interval', args=[tg_api_key, tg_chat_id, soccer_id, odds_url, fixtures_url, settled_fixtures_url, ps3838_api_key], minutes=1, next_run_time=datetime.utcnow())
 
         scheduler.start()
     except Exception as e:
