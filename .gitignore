@@ -5,7 +5,7 @@
 !.gitignore
 !requirements.txt
 !predictions
-!predictions/main.py
+!predictions/predictions.py
 !data_analysis
 !data_analysis/main.ipynb
 !README.md
