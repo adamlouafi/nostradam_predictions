@@ -4,6 +4,6 @@
 # Except
 !.gitignore
 !requirements.txt
-!./predictions/main.py
+!predictions/main.py
 !README.md
 !logo.svg
