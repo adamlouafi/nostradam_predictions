@@ -6,5 +6,7 @@
 !requirements.txt
 !predictions
 !predictions/main.py
+!data_analysis
+!data_analysis/main.ipynb
 !README.md
 !logo.svg
