@@ -7,6 +7,6 @@
 !predictions
 !predictions/predictions.py
 !data_analysis
-!data_analysis/data_analysis.ipynb
+!data_analysis/data_analysis_example.ipynb
 !README.md
 !logo.svg
