@@ -49,6 +49,9 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
         data = response.json()
         leagues = data["leagues"]
 
+        with open('criteria.json', 'r') as fp:
+            criteria = json.load(fp)
+
         for league in leagues:
             for event in league["events"]:
                 if(event["id"] in selected_fixtures):
@@ -59,23 +62,27 @@ def selectFixtures(sport_id, odds_url, fixtures_url, date, ps3838_api_key):
                             home_odd = round(match_odds["home"]*match_odds_margin, 2)
                             draw_odd = round(match_odds["draw"]*match_odds_margin, 2)
                             away_odd = round(match_odds["away"]*match_odds_margin, 2)
-                            if(4 >= home_odd >= draw_odd >= away_odd >= 2):
-                                for over_under in period["totals"]:
-                                    if(over_under["points"] == 2.5 and over_under["over"] >= 2):
-                                        over_under_odds_margin = 1/over_under["over"] + 1/over_under["under"]
-                                        over_odd = round(over_under["over"]*over_under_odds_margin, 2)
-                                        under_odd = round(over_under["under"]*over_under_odds_margin, 2)
-                                        selected_fixtures[event["id"]] = {
-                                            "date": selected_fixtures[event["id"]]["date"],
-                                            "time": selected_fixtures[event["id"]]["time"],
-                                            "league": selected_fixtures[event["id"]]["league"],
-                                            "fixture": selected_fixtures[event["id"]]["fixture"],
-                                            "home":home_odd,
-                                            "draw":draw_odd,
-                                            "away":away_odd,
-                                            "o2.5":over_odd,
-                                            "u2.5":under_odd,
-                                        }
+                            
+                            league_criteria = criteria["league"]
+                            if(league_criteria["home_lowest"] <= home_odd <= league_criteria["home_highest"]):
+                                if(league_criteria["draw_lowest"] <= draw_odd <= league_criteria["draw_highest"]):
+                                    if(league_criteria["away_lowest"] <=away_odd <= league_criteria["away_highest"]):
+                                        for over_under in period["totals"]:
+                                            if(over_under["points"] == 2.5 and over_under["over"] >= 2):
+                                                over_under_odds_margin = 1/over_under["over"] + 1/over_under["under"]
+                                                over_odd = round(over_under["over"]*over_under_odds_margin, 2)
+                                                under_odd = round(over_under["under"]*over_under_odds_margin, 2)
+                                                selected_fixtures[event["id"]] = {
+                                                    "date": selected_fixtures[event["id"]]["date"],
+                                                    "time": selected_fixtures[event["id"]]["time"],
+                                                    "league": selected_fixtures[event["id"]]["league"],
+                                                    "fixture": selected_fixtures[event["id"]]["fixture"],
+                                                    "home":home_odd,
+                                                    "draw":draw_odd,
+                                                    "away":away_odd,
+                                                    "o2.5":over_odd,
+                                                    "u2.5":under_odd,
+                                                }
 
         # remove fixtures not matching criteria                            
         for x in list(selected_fixtures):
