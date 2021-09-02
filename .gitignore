@@ -2,11 +2,8 @@
 *
 
 # Except
-!.gitignore
-!requirements.txt
-!predictions
-!predictions/predictions.py
-!data_analysis
-!data_analysis/data_analysis_example.ipynb
-!README.md
-!logo.svg
+!*/
+!.old/data_analysis/data_analysis_example.ipynb
+!.old/logo.svg
+!.old/requirements.txt
+!.old/predictions/predictions.py
