@@ -3,6 +3,7 @@
 
 # Except
 !*/
+!logo.svg
 !.old/data_analysis/data_analysis_example.ipynb
 !.old/logo.svg
 !.old/requirements.txt
